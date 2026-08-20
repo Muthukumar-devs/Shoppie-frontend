@@ -65,7 +65,7 @@ export default function OrdersPage() {
         <div className="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4">
           <CheckCircle className="h-5 w-5 text-emerald-600 shrink-0" />
           <div className="flex-1">
-            <p className="text-sm font-semibold text-emerald-800">Order placed successfully! 🎉</p>
+            <p className="text-sm font-semibold text-emerald-800">Order placed successfully!</p>
             <p className="text-xs text-emerald-600">We'll notify you when it's shipped.</p>
           </div>
           <button onClick={() => setShowSuccess(false)} className="p-1 rounded-lg hover:bg-emerald-100 transition-colors">
@@ -130,7 +130,7 @@ export default function OrdersPage() {
                           return (
                             <div key={i} className="flex items-center gap-3">
                               <div className="h-12 w-12 shrink-0 rounded-xl overflow-hidden bg-slate-50 border border-slate-100">
-                                {p?.images[0]?.url ? <img src={p.images[0].url} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-lg">📦</div>}
+                                {p?.images[0]?.url ? <img src={p.images[0].url} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center"><Package className="h-6 w-6 text-slate-300" /></div>}
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-slate-800 line-clamp-1">{p?.name ?? "Product"}</p>

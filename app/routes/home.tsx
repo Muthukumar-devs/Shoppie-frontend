@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { ArrowRight, ShoppingBag, Truck, Shield, RotateCcw, Zap } from "lucide-react";
+import { ArrowRight, ShoppingBag, Truck, Shield, RotateCcw, Zap, Flame } from "lucide-react";
 import { getProducts, getCategories, getOffers } from "../lib/api";
 import { useCart } from "../contexts/CartContext";
 import { ProductCard, PageLoader } from "../components/ui";
@@ -38,12 +38,36 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 h-64 w-64 rounded-full bg-white blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-purple-300 blur-3xl" />
+      <section className="relative bg-slate-950 text-white overflow-hidden min-h-[400px] flex items-center">
+        {/* Dynamic Abstract Tech SVG Background Pattern */}
+        <div className="absolute inset-0 z-0">
+          <svg className="w-full h-full object-cover opacity-40" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="grid-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#7928CA" stopOpacity="0.4" />
+                <stop offset="50%" stopColor="#0072FF" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#00F2FE" stopOpacity="0.4" />
+              </linearGradient>
+              <radialGradient id="glow-grad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#7928CA" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#090D1A" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+            {/* Ambient base radial glow */}
+            <circle cx="720" cy="300" r="600" fill="url(#glow-grad)" className="animate-pulse" />
+            {/* Dynamic abstract lines and grids */}
+            <path d="M 0,150 L 1440,150 M 0,300 L 1440,300 M 0,450 L 1440,450" stroke="url(#grid-grad)" strokeWidth="0.5" strokeDasharray="5 5" />
+            <path d="M 360,0 L 360,600 M 720,0 L 720,600 M 1080,0 L 1080,600" stroke="url(#grid-grad)" strokeWidth="0.5" strokeDasharray="5 5" />
+            {/* Glowing neon paths */}
+            <path d="M-100,200 Q 300,100 720,350 T 1540,200" stroke="url(#grid-grad)" strokeWidth="3" fill="none" className="opacity-60" />
+            <path d="M-100,400 Q 400,500 720,250 T 1540,400" stroke="url(#grid-grad)" strokeWidth="2" fill="none" className="opacity-40" />
+            {/* Futuristic floating dust points */}
+            <circle cx="200" cy="100" r="3" fill="#00F2FE" className="animate-ping" />
+            <circle cx="1200" cy="400" r="4" fill="#7928CA" className="animate-ping" style={{ animationDelay: "1.5s" }} />
+            <circle cx="900" cy="150" r="2" fill="#0072FF" className="animate-ping" style={{ animationDelay: "0.8s" }} />
+          </svg>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium mb-6">
               <Zap className="h-4 w-4 text-yellow-400" /> New arrivals every week
@@ -93,11 +117,11 @@ export default function Home() {
       {offers.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xl font-bold text-slate-900">🔥 Hot Offers</h2>
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2"><Flame className="h-5 w-5 text-orange-500" /> Hot Offers</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {offers.slice(0, 3).map((offer) => (
-              <div key={offer._id} className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-6 shadow-md">
+              <div key={offer._id} className="relative rounded-2xl overflow-hidden bg-linear-to-br from-indigo-600 to-purple-700 text-white p-6 shadow-md">
                 {offer.image?.url && (
                   <img src={offer.image.url} alt={offer.title} className="absolute inset-0 h-full w-full object-cover opacity-20" />
                 )}
@@ -135,7 +159,7 @@ export default function Home() {
                   {cat.image?.url ? (
                     <img src={cat.image.url} alt={cat.name} className="h-full w-full object-cover group-hover:scale-110 transition-transform" />
                   ) : (
-                    <span className="text-2xl">🛍️</span>
+                    <ShoppingBag className="h-6 w-6 text-slate-400" />
                   )}
                 </div>
                 <span className="text-xs font-medium text-slate-700 line-clamp-2 leading-tight">{cat.name}</span>

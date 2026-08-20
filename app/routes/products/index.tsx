@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router";
-import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
+import { SlidersHorizontal, X, ChevronDown, Search, Package } from "lucide-react";
 import { getProducts, getCategories, getSubCategories } from "../../lib/api";
 import { useCart } from "../../contexts/CartContext";
 import { ProductCard, PageLoader, Pagination, EmptyState, Button } from "../../components/ui";
@@ -203,7 +203,7 @@ export default function ProductsPage() {
             <PageLoader />
           ) : products.length === 0 ? (
             <EmptyState
-              icon="🔍"
+              icon={<Search className="h-8 w-8" />}
               title="No products found"
               description="Try adjusting your filters or search query."
               action={hasFilters ? <Button variant="outline" onClick={clearFilters}><X className="h-4 w-4" /> Clear Filters</Button> : undefined}

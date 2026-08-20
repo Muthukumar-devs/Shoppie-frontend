@@ -79,6 +79,12 @@ export const getMyProfile = () => api.get("/users/me");
 export const updateMyProfile = (data: { fullName?: string; phoneNumber?: string }) =>
   api.patch("/users/me", data);
 
+export const getMyAddresses = () => api.get("/users/me/addresses");
+
+export const addAddress = (data: object) => api.post("/users/me/addresses", data);
+
+export const deleteAddress = (addressId: string) => api.delete(`/users/me/addresses/${addressId}`);
+
 // ── Products ──────────────────────────────────────────────
 export const getProducts = (params?: Record<string, string | number>) =>
   api.get("/products", { params });

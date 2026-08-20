@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
-import { MapPin, CreditCard, Truck, ArrowLeft, Check } from "lucide-react";
-import { placeOrderCOD, createRazorpayOrder, verifyPayment } from "../../lib/api";
+import { MapPin, CreditCard, Truck, ArrowLeft, Check, BookMarked, Plus, Package } from "lucide-react";
+import { placeOrderCOD, createRazorpayOrder, verifyPayment, getMyAddresses, addAddress } from "../../lib/api";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
-import { Button, FormField, Input, Select } from "../../components/ui";
-import type { ShippingAddress } from "../../lib/types";
+import { Button, FormField, Input, Select, PageLoader } from "../../components/ui";
+import type { ShippingAddress, SavedAddress } from "../../lib/types";
 
 export function meta() {
   return [{ title: "Checkout – Shoppie" }];
 }
 
 const INDIAN_STATES = ["Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi","Jammu & Kashmir","Ladakh","Puducherry"];
+
+const EMPTY_ADDRESS: ShippingAddress = { fullName: "", phone: "", addressLine: "", city: "", state: "", pincode: "" };
 
 declare global { interface Window { Razorpay: new (opts: object) => { open: () => void }; } }
 
@@ -20,18 +22,36 @@ export default function CheckoutPage() {
   const { cart, cartTotal, refreshCart } = useCart();
   const { isAuthenticated, user } = useAuth();
 
-  const [address, setAddress] = useState<ShippingAddress>({
-    fullName: user?.fullName ?? "",
-    phone: user?.phoneNumber ?? "",
-    addressLine: "",
-    city: "",
-    state: "",
-    pincode: "",
-  });
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("new");
+  const [address, setAddress] = useState<ShippingAddress>({ ...EMPTY_ADDRESS, fullName: user?.fullName ?? "", phone: user?.phoneNumber ?? "" });
+  const [saveAddress, setSaveAddress] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "razorpay">("cod");
   const [loading, setLoading] = useState(false);
+  const [addressesLoading, setAddressesLoading] = useState(true);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<Partial<ShippingAddress>>({});
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    getMyAddresses().then((res) => {
+      const addrs: SavedAddress[] = res.data.data.addresses ?? [];
+      setSavedAddresses(addrs);
+      if (addrs.length > 0) {
+        setSelectedAddressId(addrs[0]._id);
+        const { _id, ...rest } = addrs[0];
+        setAddress(rest);
+      }
+    }).catch(() => {}).finally(() => setAddressesLoading(false));
+
+    // Preload Razorpay SDK on page mount so it's ready when Pay Now is clicked
+    if (!window.Razorpay && !document.querySelector('script[src*="razorpay"]')) {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, [isAuthenticated]);
 
   if (!isAuthenticated) {
     return (
@@ -42,6 +62,8 @@ export default function CheckoutPage() {
     );
   }
 
+  if (addressesLoading) return <PageLoader />;
+
   if (cart.items.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
@@ -50,6 +72,21 @@ export default function CheckoutPage() {
       </div>
     );
   }
+
+  const handleSelectAddress = (id: string) => {
+    setSelectedAddressId(id);
+    setErrors({});
+    if (id === "new") {
+      setAddress({ ...EMPTY_ADDRESS, fullName: user?.fullName ?? "", phone: user?.phoneNumber ?? "" });
+      setSaveAddress(false);
+    } else {
+      const found = savedAddresses.find((a) => a._id === id);
+      if (found) {
+        const { _id, ...rest } = found;
+        setAddress(rest);
+      }
+    }
+  };
 
   const validate = () => {
     const e: Partial<ShippingAddress> = {};
@@ -63,14 +100,25 @@ export default function CheckoutPage() {
     return Object.keys(e).length === 0;
   };
 
+  const maybeSaveAddress = async () => {
+    if (saveAddress && selectedAddressId === "new") {
+      try {
+        const res = await addAddress(address);
+        setSavedAddresses(res.data.data.addresses ?? []);
+      } catch {}
+    }
+  };
+
   const handleCOD = async () => {
     if (!validate()) return;
     setLoading(true);
     setError("");
     try {
+      await maybeSaveAddress();
       const res = await placeOrderCOD(address);
+      const orderId = res.data.data.order._id;
       await refreshCart();
-      navigate(`/orders?success=${res.data.data.order._id}`);
+      navigate(`/orders?success=${orderId}`);
     } catch (err: unknown) {
       setError((err as { response?: { data?: { message?: string } } }).response?.data?.message ?? "Order failed. Please try again.");
     } finally {
@@ -83,8 +131,12 @@ export default function CheckoutPage() {
     setLoading(true);
     setError("");
     try {
+      await maybeSaveAddress();
       const res = await createRazorpayOrder(address);
       const { razorpayOrder, key } = res.data.data;
+
+      const { fetchCsrfToken } = await import("../../lib/api");
+      await fetchCsrfToken();
 
       const options = {
         key,
@@ -100,20 +152,38 @@ export default function CheckoutPage() {
             const verifyRes = await verifyPayment({ ...response, shippingAddress: address });
             await refreshCart();
             navigate(`/orders?success=${verifyRes.data.data.order._id}`);
-          } catch {
-            setError("Payment verification failed. Contact support.");
+          } catch (err: unknown) {
+            setError((err as { response?: { data?: { message?: string } } }).response?.data?.message ?? "Payment verification failed. Please contact support.");
+            setLoading(false);
           }
         },
         modal: { ondismiss: () => setLoading(false) },
       };
 
-      if (!window.Razorpay) {
-        const script = document.createElement("script");
-        script.src = "https://checkout.razorpay.com/v1/checkout.js";
-        script.onload = () => { new window.Razorpay(options).open(); };
-        document.body.appendChild(script);
-      } else {
+      const openRazorpay = () => {
+        if (!window.Razorpay) {
+          setError("Payment gateway not loaded. Please refresh the page and try again.");
+          setLoading(false);
+          return;
+        }
         new window.Razorpay(options).open();
+      };
+
+      // If script somehow not loaded yet, wait for it
+      if (!window.Razorpay) {
+        const existing = document.querySelector('script[src*="razorpay"]') as HTMLScriptElement | null;
+        if (existing) {
+          existing.onload = openRazorpay;
+          existing.onerror = () => { setError("Failed to load payment gateway. Please refresh and try again."); setLoading(false); };
+        } else {
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = openRazorpay;
+          script.onerror = () => { setError("Failed to load payment gateway. Please refresh and try again."); setLoading(false); };
+          document.body.appendChild(script);
+        }
+      } else {
+        openRazorpay();
       }
     } catch (err: unknown) {
       setError((err as { response?: { data?: { message?: string } } }).response?.data?.message ?? "Failed to initiate payment.");
@@ -122,6 +192,7 @@ export default function CheckoutPage() {
   };
 
   const total = cartTotal + (cartTotal >= 499 ? 0 : 49);
+  const isNewAddress = selectedAddressId === "new";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -139,7 +210,57 @@ export default function CheckoutPage() {
             <h2 className="text-base font-semibold text-slate-800 mb-5 flex items-center gap-2">
               <MapPin className="h-5 w-5 text-indigo-600" /> Shipping Address
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            {/* Saved address selector */}
+            {savedAddresses.length > 0 && (
+              <div className="mb-5 space-y-2">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                  <BookMarked className="h-3.5 w-3.5" /> Saved Addresses
+                </p>
+                <div className="space-y-2">
+                  {savedAddresses.map((addr) => (
+                    <label
+                      key={addr._id}
+                      className={`flex items-start gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${selectedAddressId === addr._id ? "border-indigo-500 bg-indigo-50" : "border-slate-200 hover:border-slate-300"}`}
+                    >
+                      <input
+                        type="radio"
+                        name="savedAddress"
+                        value={addr._id}
+                        checked={selectedAddressId === addr._id}
+                        onChange={() => handleSelectAddress(addr._id)}
+                        className="mt-0.5 accent-indigo-600"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-slate-800">{addr.fullName}</p>
+                        <p className="text-xs text-slate-500">{addr.phone}</p>
+                        <p className="text-xs text-slate-500 truncate">{addr.addressLine}, {addr.city}, {addr.state} – {addr.pincode}</p>
+                      </div>
+                      {selectedAddressId === addr._id && <Check className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />}
+                    </label>
+                  ))}
+
+                  {/* Add new option */}
+                  <label
+                    className={`flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${isNewAddress ? "border-indigo-500 bg-indigo-50" : "border-dashed border-slate-300 hover:border-slate-400"}`}
+                  >
+                    <input
+                      type="radio"
+                      name="savedAddress"
+                      value="new"
+                      checked={isNewAddress}
+                      onChange={() => handleSelectAddress("new")}
+                      className="accent-indigo-600"
+                    />
+                    <Plus className="h-4 w-4 text-indigo-500" />
+                    <span className="text-sm font-medium text-indigo-600">Use a new address</span>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {/* Address form — always shown, readonly when saved address selected */}
+            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${!isNewAddress ? "opacity-60 pointer-events-none" : ""}`}>
               <FormField label="Full Name" required error={errors.fullName}>
                 <Input value={address.fullName} onChange={(e) => setAddress({ ...address, fullName: e.target.value })} placeholder="John Doe" />
               </FormField>
@@ -162,6 +283,19 @@ export default function CheckoutPage() {
                 <Input value={address.pincode} onChange={(e) => setAddress({ ...address, pincode: e.target.value })} placeholder="400001" maxLength={6} />
               </FormField>
             </div>
+
+            {/* Save address checkbox — only for new address */}
+            {isNewAddress && (
+              <label className="mt-4 flex items-center gap-2 cursor-pointer w-fit">
+                <input
+                  type="checkbox"
+                  checked={saveAddress}
+                  onChange={(e) => setSaveAddress(e.target.checked)}
+                  className="accent-indigo-600 h-4 w-4"
+                />
+                <span className="text-sm text-slate-600">Save this address for future orders</span>
+              </label>
+            )}
           </div>
 
           {/* Payment Method */}
@@ -213,7 +347,7 @@ export default function CheckoutPage() {
                 return (
                   <div key={p._id} className="flex gap-3">
                     <div className="h-12 w-12 shrink-0 rounded-lg overflow-hidden bg-slate-50 border border-slate-100">
-                      {p.images[0]?.url ? <img src={p.images[0].url} alt={p.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-lg">📦</div>}
+                      {p.images[0]?.url ? <img src={p.images[0].url} alt={p.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center"><Package className="h-5 w-5 text-slate-300" /></div>}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium text-slate-800 line-clamp-1">{p.name}</p>

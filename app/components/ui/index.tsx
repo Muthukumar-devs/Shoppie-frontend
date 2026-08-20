@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect } from "react";
-import { X, AlertTriangle, Star } from "lucide-react";
+import { ShoppingCart, Package, Inbox, AlertTriangle, Star, X } from "lucide-react";
 
 // ── Button ────────────────────────────────────────────────
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -146,7 +146,9 @@ export function ConfirmDialog({ open, onClose, onConfirm, title, message, loadin
 export function EmptyState({ icon, title, description, action }: { icon?: ReactNode; title: string; description?: string; action?: ReactNode }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-      <div className="mb-4 text-5xl">{icon ?? "📭"}</div>
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+        {icon ?? <Inbox className="h-8 w-8" />}
+      </div>
       <h3 className="text-lg font-semibold text-slate-700 mb-1">{title}</h3>
       {description && <p className="text-sm text-slate-500 mb-6 max-w-sm">{description}</p>}
       {action}
@@ -237,7 +239,6 @@ export function OtpInput({ value, onChange }: { value: string; onChange: (v: str
 }
 
 // ── ProductCard ───────────────────────────────────────────
-import { ShoppingCart } from "lucide-react";
 import type { Product } from "../../lib/types";
 
 export function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart?: (id: string) => void }) {
@@ -248,7 +249,9 @@ export function ProductCard({ product, onAddToCart }: { product: Product; onAddT
         {img ? (
           <img src={img} alt={product.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
         ) : (
-          <div className="flex h-full items-center justify-center text-4xl">📦</div>
+          <div className="flex h-full items-center justify-center bg-slate-100">
+            <Package className="h-12 w-12 text-slate-300" />
+          </div>
         )}
         {product.discount > 0 && (
           <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{product.discount}% OFF</span>

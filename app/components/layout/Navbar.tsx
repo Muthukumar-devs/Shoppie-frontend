@@ -84,7 +84,7 @@ export default function Navbar() {
                   <div className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">
                     {user?.fullName?.charAt(0).toUpperCase()}
                   </div>
-                  <span className="hidden sm:block max-w-[100px] truncate">{user?.fullName}</span>
+                  <span className="hidden sm:block max-w-25 truncate">{user?.fullName}</span>
                 </button>
                 {userMenuOpen && (
                   <>

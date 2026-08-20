@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { User, Mail, Phone, Edit2, Check, X, LogOut, Package } from "lucide-react";
+import { User, Mail, Phone, Edit2, Check, X, LogOut, Package, BadgeCheck, ShieldAlert } from "lucide-react";
 import { updateMyProfile } from "../../lib/api";
 import { useAuth } from "../../contexts/AuthContext";
 import { Button, FormField, Input } from "../../components/ui";
@@ -62,8 +62,8 @@ export default function ProfilePage() {
           <div>
             <h2 className="text-lg font-bold text-slate-900">{user.fullName}</h2>
             <p className="text-sm text-slate-500">{user.email}</p>
-            <span className={`inline-flex items-center mt-1 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${user.isEmailVerified ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20" : "bg-amber-50 text-amber-700 ring-amber-600/20"}`}>
-              {user.isEmailVerified ? "✓ Verified" : "Unverified"}
+            <span className={`inline-flex items-center gap-1 mt-1 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset ${user.isEmailVerified ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20" : "bg-amber-50 text-amber-700 ring-amber-600/20"}`}>
+              {user.isEmailVerified ? <><BadgeCheck className="h-3.5 w-3.5" /> Verified</> : <><ShieldAlert className="h-3.5 w-3.5" /> Unverified</>}
             </span>
           </div>
         </div>

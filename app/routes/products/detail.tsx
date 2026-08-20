@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
-import { ShoppingCart, ArrowLeft, Check, Truck, Shield, Star, ChevronRight } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Check, Truck, Shield, Star, ChevronRight, Package } from "lucide-react";
 import { getProduct } from "../../lib/api";
 import { useCart } from "../../contexts/CartContext";
 import { Button, Badge, StarRating, PageLoader, Spinner } from "../../components/ui";
@@ -85,7 +85,9 @@ export default function ProductDetail() {
             {product.images[selectedImg]?.url ? (
               <img src={product.images[selectedImg].url} alt={product.name} className="h-full w-full object-contain p-4" />
             ) : (
-              <div className="flex h-full items-center justify-center text-6xl">📦</div>
+              <div className="flex h-full items-center justify-center">
+                <Package className="h-20 w-20 text-slate-200" />
+              </div>
             )}
           </div>
           {product.images.length > 1 && (

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Trash2, ShoppingBag, ArrowRight, Minus, Plus } from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight, Minus, Plus, ShoppingCart, Package } from "lucide-react";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
-import { Button, EmptyState, Spinner, ConfirmDialog } from "../../components/ui";
+import { Button, EmptyState, Spinner, ConfirmDialog, PageLoader } from "../../components/ui";
 
 export function meta() {
   return [{ title: "Cart – Shoppie" }];
@@ -21,7 +21,7 @@ export default function CartPage() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20">
         <EmptyState
-          icon="🛒"
+          icon={<ShoppingCart className="h-8 w-8" />}
           title="Your cart is empty"
           description="Sign in to view your cart and start shopping."
           action={
@@ -34,15 +34,13 @@ export default function CartPage() {
     );
   }
 
-  if (loading) {
-    return <div className="flex min-h-[60vh] items-center justify-center"><Spinner size="lg" /></div>;
-  }
+  if (loading) return <PageLoader />;
 
   if (cart.items.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20">
         <EmptyState
-          icon="🛒"
+          icon={<ShoppingCart className="h-8 w-8" />}
           title="Your cart is empty"
           description="Looks like you haven't added anything yet."
           action={
@@ -96,7 +94,9 @@ export default function CartPage() {
                     {p.images[0]?.url ? (
                       <img src={p.images[0].url} alt={p.name} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="flex h-full items-center justify-center text-2xl">📦</div>
+                      <div className="flex h-full items-center justify-center">
+                        <Package className="h-8 w-8 text-slate-300" />
+                      </div>
                     )}
                   </div>
                 </Link>
@@ -117,7 +117,7 @@ export default function CartPage() {
                       >
                         <Minus className="h-3.5 w-3.5" />
                       </button>
-                      <span className="px-3 py-1.5 text-sm font-semibold text-slate-800 border-x border-slate-200 min-w-[2.5rem] text-center">
+                      <span className="px-3 py-1.5 text-sm font-semibold text-slate-800 border-x border-slate-200 min-w-10 text-center">
                         {isUpdating ? <Spinner size="sm" /> : item.quantity}
                       </span>
                       <button

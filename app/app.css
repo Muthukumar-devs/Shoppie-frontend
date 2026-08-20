@@ -2,8 +2,69 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --color-primary: #4f46e5;
-  --color-primary-dark: #4338ca;
+
+  /* Custom brand primary and primary-dark overrides */
+  --color-primary: #7928ca;
+  --color-primary-dark: #0072ff;
+
+  /* Override slate colors for Midnight Slate Dark Mode */
+  --color-slate-50: #090d1a;       /* Deep Midnight Blue body background */
+  --color-slate-100: #1e293b;      /* Dark slate border */
+  --color-slate-200: #334155;      /* Border / divider */
+  --color-slate-300: #475569;      /* Darker grey */
+  --color-slate-400: #64748b;      /* Grey text */
+  --color-slate-500: #94a3b8;      /* Grey text */
+  --color-slate-600: #cbd5e1;      /* Light grey text */
+  --color-slate-700: #e2e8f0;      /* Lighter text */
+  --color-slate-800: #f1f5f9;      /* White-ish text */
+  --color-slate-900: #ffffff;      /* Pure white text */
+  --color-slate-950: #050811;      /* Extra dark for elements */
+
+  /* Override white color to match Dark mode card background */
+  --color-white: #131b2e;          /* Slate Gray card/component background */
+
+  /* Override indigo colors to match the Amethyst Aurora palette */
+  --color-indigo-50: #1e1b4b;      /* Dark active bg for buttons/badges */
+  --color-indigo-100: #312e81;     /* Avatar bg / active badge bg */
+  --color-indigo-200: #cbd5e1;     /* Light gray */
+  --color-indigo-300: #00f2fe;     /* Electric Cyan accent */
+  --color-indigo-400: #a78bfa;
+  --color-indigo-500: #7928ca;     /* Vibrant Purple */
+  --color-indigo-600: #7928ca;     /* Vibrant Purple */
+  --color-indigo-700: #0072ff;     /* Cobalt Blue */
+  --color-indigo-800: #0072ff;     /* Cobalt Blue */
+  --color-indigo-900: #7928ca;     /* Vibrant Purple (Hero) */
+  --color-indigo-950: #020617;
+
+  /* Override purple to match the Amethyst Aurora palette */
+  --color-purple-600: #7928ca;
+  --color-purple-700: #0072ff;
+  --color-purple-800: #0056c6;
+  --color-purple-900: #00f2fe;     /* Electric Cyan (Hero) */
+
+  /* Override red / danger colors to match Secondary Alert (Pink/Magenta) */
+  --color-red-50: #2a1215;         /* Red alert bg in dark mode */
+  --color-red-100: #4c1d24;
+  --color-red-500: #FF007A;        /* Neon Pink */
+  --color-red-600: #f857a6;        /* Deep Magenta */
+  --color-red-700: #ff2a85;
+  --color-red-800: #e11d48;
+
+  /* Override emerald (success) colors for dark mode */
+  --color-emerald-50: #062013;
+  --color-emerald-100: #0c3b24;
+  --color-emerald-200: #0f5b35;
+  --color-emerald-600: #10b981;
+  --color-emerald-700: #34d399;
+  --color-emerald-800: #34d399;
+
+  /* Override amber (warning/pending) colors for dark mode */
+  --color-amber-50: #2d1a00;
+  --color-amber-100: #4a2b00;
+  --color-amber-200: #6b3d00;
+  --color-amber-600: #fbbf24;
+  --color-amber-700: #fbbf24;
+  --color-amber-800: #f59e0b;
 }
 
 html, body {
@@ -16,3 +77,273 @@ html, body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* --- CUSTOM DARK MODE UTILITY OVERRIDES --- */
+
+/* Fix text colors dynamically since they are hardcoded to dark slate classes */
+.text-slate-900 { color: #ffffff !important; }
+.text-slate-800 { color: #f1f5f9 !important; }
+.text-slate-700 { color: #e2e8f0 !important; }
+.text-slate-600 { color: #cbd5e1 !important; }
+.text-slate-500 { color: #94a3b8 !important; }
+
+/* Correct white text utility */
+.text-white { color: #ffffff !important; }
+.fill-white { fill: #ffffff !important; }
+
+/* Ambient background glow orbs for Amethyst Aurora vibe with floating animation */
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(121, 40, 202, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  animation: float-rotate-left 25s infinite ease-in-out;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  bottom: 10%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(255, 0, 122, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  animation: float-rotate-right 30s infinite ease-in-out;
+}
+
+@keyframes float-rotate-left {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(4vw, -6vh) rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: translate(0px, 0px) rotate(360deg) scale(1);
+  }
+}
+
+@keyframes float-rotate-right {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-3vw, 5vh) rotate(-180deg) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) rotate(-360deg) scale(1);
+  }
+}
+
+/* Make logo text gradient */
+a[href="/"] .text-slate-900,
+.bg-linear-to-r.from-indigo-600.to-indigo-700 h1 {
+  background: linear-gradient(135deg, #7928CA, #0072FF, #00F2FE);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Enhance primary CTA buttons with gradient action */
+.bg-white.text-indigo-700 {
+  background: linear-gradient(135deg, #7928CA, #0072FF, #00F2FE) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+.bg-white.text-indigo-700:hover {
+  opacity: 0.9 !important;
+}
+
+/* --- MOTION GRAPHICS & ANIMATION ADDITIONS --- */
+
+/* Page Fade-In and Slide-Up Entry Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animate main route container elements on render */
+main > div {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Product card hover dynamic scaling, border transform, and amethyst glow */
+a.group.block {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+a.group.block:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 20px 25px -5px rgba(121, 40, 202, 0.15), 0 10px 10px -5px rgba(0, 114, 255, 0.1);
+  border-color: rgba(121, 40, 202, 0.4) !important;
+}
+
+/* Product Card Images Hover zoom */
+a.group.block img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+a.group.block:hover img {
+  transform: scale(1.05) !important;
+}
+
+/* Logo store icon rotation micro-interaction on hover */
+a[href="/"]:hover .bg-indigo-600 {
+  transform: rotate(15deg) scale(1.08);
+}
+a[href="/"] .bg-indigo-600 {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Cart icon scale & translate micro-interaction on hover */
+a[href="/cart"]:hover svg {
+  transform: translateY(-2px) scale(1.1);
+}
+a[href="/cart"] svg {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* User avatar scale micro-interaction */
+button:hover .bg-indigo-100 {
+  transform: scale(1.08);
+}
+button .bg-indigo-100 {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Category item card scaling and hover border highlights */
+a[href*="/products?category="] {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+a[href*="/products?category="]:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 20px -8px rgba(121, 40, 202, 0.2);
+  border-color: rgba(121, 40, 202, 0.3) !important;
+}
+
+/* Hot Offers Banner Pulsating Ambient Glow */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 4px 6px -1px rgba(121, 40, 202, 0.1), 0 2px 4px -1px rgba(0, 114, 255, 0.06);
+  }
+  50% {
+    box-shadow: 0 10px 30px -5px rgba(121, 40, 202, 0.25), 0 8px 15px -5px rgba(0, 114, 255, 0.15);
+  }
+}
+.relative.rounded-2xl.overflow-hidden.bg-linear-to-br.from-indigo-600.to-purple-700,
+.relative.rounded-2xl.overflow-hidden.bg-linear-to-br.from-indigo-900.via-indigo-800.to-purple-900 {
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+/* Buttons micro-scaling */
+button,
+a.inline-flex.items-center.justify-center {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+button:hover,
+a.inline-flex.items-center.justify-center:hover {
+  transform: translateY(-1px);
+}
+button:active,
+a.inline-flex.items-center.justify-center:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* --- IN-PAGE ELEMENT STAGGER ANIMATIONS --- */
+
+/* Staggered entry animation for product cards inside grids */
+.grid > a.group.block {
+  opacity: 0;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.grid > a.group.block:nth-child(1) { animation-delay: 0.04s; }
+.grid > a.group.block:nth-child(2) { animation-delay: 0.08s; }
+.grid > a.group.block:nth-child(3) { animation-delay: 0.12s; }
+.grid > a.group.block:nth-child(4) { animation-delay: 0.16s; }
+.grid > a.group.block:nth-child(5) { animation-delay: 0.20s; }
+.grid > a.group.block:nth-child(6) { animation-delay: 0.24s; }
+.grid > a.group.block:nth-child(7) { animation-delay: 0.28s; }
+.grid > a.group.block:nth-child(8) { animation-delay: 0.32s; }
+.grid > a.group.block:nth-child(9) { animation-delay: 0.36s; }
+.grid > a.group.block:nth-child(10) { animation-delay: 0.40s; }
+.grid > a.group.block:nth-child(11) { animation-delay: 0.44s; }
+.grid > a.group.block:nth-child(12) { animation-delay: 0.48s; }
+
+/* Staggered entry for category selection items */
+.grid > a[href*="/products?category="] {
+  opacity: 0;
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.grid > a[href*="/products?category="]:nth-child(1) { animation-delay: 0.03s; }
+.grid > a[href*="/products?category="]:nth-child(2) { animation-delay: 0.06s; }
+.grid > a[href*="/products?category="]:nth-child(3) { animation-delay: 0.09s; }
+.grid > a[href*="/products?category="]:nth-child(4) { animation-delay: 0.12s; }
+.grid > a[href*="/products?category="]:nth-child(5) { animation-delay: 0.15s; }
+.grid > a[href*="/products?category="]:nth-child(6) { animation-delay: 0.18s; }
+.grid > a[href*="/products?category="]:nth-child(7) { animation-delay: 0.21s; }
+.grid > a[href*="/products?category="]:nth-child(8) { animation-delay: 0.24s; }
+
+/* Staggered entry for cart list items */
+.lg\:col-span-2 > div {
+  opacity: 0;
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.lg\:col-span-2 > div:nth-child(1) { animation-delay: 0.04s; }
+.lg\:col-span-2 > div:nth-child(2) { animation-delay: 0.08s; }
+.lg\:col-span-2 > div:nth-child(3) { animation-delay: 0.12s; }
+.lg\:col-span-2 > div:nth-child(4) { animation-delay: 0.16s; }
+.lg\:col-span-2 > div:nth-child(5) { animation-delay: 0.20s; }
+
+/* Staggered entry for order lists */
+.space-y-4 > div {
+  opacity: 0;
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.space-y-4 > div:nth-child(1) { animation-delay: 0.05s; }
+.space-y-4 > div:nth-child(2) { animation-delay: 0.10s; }
+.space-y-4 > div:nth-child(3) { animation-delay: 0.15s; }
+.space-y-4 > div:nth-child(4) { animation-delay: 0.20s; }
+.space-y-4 > div:nth-child(5) { animation-delay: 0.25s; }
+
+/* Staggered entry for form fields (Login, Signup, Profile, Checkout) */
+form .flex-col,
+.grid > .flex-col,
+.space-y-4 > .flex-col,
+.space-y-6 > .flex-col {
+  opacity: 0;
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+form .flex-col:nth-child(1), .grid > .flex-col:nth-child(1), .space-y-4 > .flex-col:nth-child(1) { animation-delay: 0.04s; }
+form .flex-col:nth-child(2), .grid > .flex-col:nth-child(2), .space-y-4 > .flex-col:nth-child(2) { animation-delay: 0.08s; }
+form .flex-col:nth-child(3), .grid > .flex-col:nth-child(3), .space-y-4 > .flex-col:nth-child(3) { animation-delay: 0.12s; }
+form .flex-col:nth-child(4), .grid > .flex-col:nth-child(4), .space-y-4 > .flex-col:nth-child(4) { animation-delay: 0.16s; }
+
+/* Product detail page inner details animations */
+.grid-cols-1.lg\:grid-cols-2 > div.space-y-5 > * {
+  opacity: 0;
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.grid-cols-1.lg\:grid-cols-2 > div.space-y-5 > *:nth-child(1) { animation-delay: 0.04s; }
+.grid-cols-1.lg\:grid-cols-2 > div.space-y-5 > *:nth-child(2) { animation-delay: 0.08s; }
+.grid-cols-1.lg\:grid-cols-2 > div.space-y-5 > *:nth-child(3) { animation-delay: 0.12s; }
+.grid-cols-1.lg\:grid-cols-2 > div.space-y-5 > *:nth-child(4) { animation-delay: 0.16s; }
+.grid-cols-1.lg\:grid-cols-2 > div.space-y-5 > *:nth-child(5) { animation-delay: 0.20s; }
+.grid-cols-1.lg\:grid-cols-2 > div.space-y-5 > *:nth-child(6) { animation-delay: 0.24s; }
+.grid-cols-1.lg\:grid-cols-2 > div.space-y-5 > *:nth-child(7) { animation-delay: 0.28s; }

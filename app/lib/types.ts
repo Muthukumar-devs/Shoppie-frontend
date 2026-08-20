@@ -69,6 +69,10 @@ export interface ShippingAddress {
   pincode: string;
 }
 
+export interface SavedAddress extends ShippingAddress {
+  _id: string;
+}
+
 export interface OrderItem {
   product: Product | string;
   quantity: number;
