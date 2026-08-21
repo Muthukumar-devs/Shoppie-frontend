@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, ShoppingBag, Truck, Shield, RotateCcw, Zap, Flame } from "lucide-react";
+import { motion } from "framer-motion";
 import { getProducts, getCategories, getOffers } from "../lib/api";
 import { useCart } from "../contexts/CartContext";
 import { ProductCard, PageLoader } from "../components/ui";
@@ -38,34 +39,20 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative bg-slate-950 text-white overflow-hidden min-h-[400px] flex items-center">
-        {/* Dynamic Abstract Tech SVG Background Pattern */}
+      <section className="relative bg-slate-950 text-white overflow-hidden min-h-120 sm:min-h-130 flex items-center">
+        {/* Background Video Banner */}
         <div className="absolute inset-0 z-0">
-          <svg className="w-full h-full object-cover opacity-40" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="grid-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#7928CA" stopOpacity="0.4" />
-                <stop offset="50%" stopColor="#0072FF" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#00F2FE" stopOpacity="0.4" />
-              </linearGradient>
-              <radialGradient id="glow-grad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#7928CA" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="#090D1A" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            {/* Ambient base radial glow */}
-            <circle cx="720" cy="300" r="600" fill="url(#glow-grad)" className="animate-pulse" />
-            {/* Dynamic abstract lines and grids */}
-            <path d="M 0,150 L 1440,150 M 0,300 L 1440,300 M 0,450 L 1440,450" stroke="url(#grid-grad)" strokeWidth="0.5" strokeDasharray="5 5" />
-            <path d="M 360,0 L 360,600 M 720,0 L 720,600 M 1080,0 L 1080,600" stroke="url(#grid-grad)" strokeWidth="0.5" strokeDasharray="5 5" />
-            {/* Glowing neon paths */}
-            <path d="M-100,200 Q 300,100 720,350 T 1540,200" stroke="url(#grid-grad)" strokeWidth="3" fill="none" className="opacity-60" />
-            <path d="M-100,400 Q 400,500 720,250 T 1540,400" stroke="url(#grid-grad)" strokeWidth="2" fill="none" className="opacity-40" />
-            {/* Futuristic floating dust points */}
-            <circle cx="200" cy="100" r="3" fill="#00F2FE" className="animate-ping" />
-            <circle cx="1200" cy="400" r="4" fill="#7928CA" className="animate-ping" style={{ animationDelay: "1.5s" }} />
-            <circle cx="900" cy="150" r="2" fill="#0072FF" className="animate-ping" style={{ animationDelay: "0.8s" }} />
-          </svg>
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover opacity-45"
+          >
+            <source src="/video/Cinematic_D_commercial_render.mp4" type="video/mp4" />
+          </video>
+          {/* Ambient Overlay for text contrast */}
+          <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-slate-950/40" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
           <div className="max-w-2xl">
@@ -91,49 +78,85 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust badges */}
-      <section className="bg-white border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {/* Trust Badges displaying Framer Motion image cards */}
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 }
+              }
+            }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
             {[
-              { icon: <Truck className="h-5 w-5 text-indigo-600" />, title: "Free Delivery", sub: "On orders above ₹499" },
-              { icon: <Shield className="h-5 w-5 text-emerald-600" />, title: "Secure Payment", sub: "100% safe & secure" },
-              { icon: <RotateCcw className="h-5 w-5 text-amber-600" />, title: "Easy Returns", sub: "7-day return policy" },
-              { icon: <Zap className="h-5 w-5 text-purple-600" />, title: "Fast Shipping", sub: "2-3 business days" },
-            ].map(({ icon, title, sub }) => (
-              <div key={title} className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50">{icon}</div>
-                <div>
-                  <p className="text-sm font-semibold text-slate-800">{title}</p>
-                  <p className="text-xs text-slate-500">{sub}</p>
+              { image: "/images/free_delivery.jpg", title: "Free Delivery", sub: "On orders above ₹499" },
+              { image: "/images/secure_payment.jpg", title: "Secure Payment", sub: "100% safe & secure" },
+              { image: "/images/easy_returns.jpg", title: "Easy Returns", sub: "7-day return policy" },
+              { image: "/images/fast_shipping.jpg", title: "Fast Shipping", sub: "2-3 business days" },
+            ].map(({ image, title, sub }) => (
+              <motion.div
+                key={title}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+                }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative h-48 rounded-2xl overflow-hidden shadow-lg border border-slate-800/80 cursor-pointer"
+              >
+                <img src={image} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-slate-950/60 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
+                <div className="absolute inset-0 p-5 flex flex-col justify-end">
+                  <h3 className="text-lg font-bold text-white mb-1 drop-shadow-md">{title}</h3>
+                  <p className="text-xs text-slate-300 font-medium">{sub}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Offers Banner */}
       {offers.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2"><Flame className="h-5 w-5 text-orange-500" /> Hot Offers</h2>
+        <section className="py-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-5">
+            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <Flame className="h-5 w-5 text-orange-500" /> Hot Offers
+            </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {offers.slice(0, 3).map((offer) => (
-              <div key={offer._id} className="relative rounded-2xl overflow-hidden bg-linear-to-br from-indigo-600 to-purple-700 text-white p-6 shadow-md">
-                {offer.image?.url && (
-                  <img src={offer.image.url} alt={offer.title} className="absolute inset-0 h-full w-full object-cover opacity-20" />
+          <div className="flex gap-4 overflow-x-auto px-4 sm:px-6 lg:px-8 pb-3 scrollbar-hide">
+            {offers.map((offer, i) => (
+              <motion.div
+                key={offer._id}
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 100, damping: 15, delay: i * 0.08 }}
+                whileHover={{ y: -6, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative h-44 w-96 shrink-0 rounded-2xl overflow-hidden shadow-lg border border-slate-800/80 cursor-pointer"
+              >
+                {offer.image?.url ? (
+                  <img src={offer.image.url} alt={offer.title} className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                ) : (
+                  <div className="absolute inset-0 bg-slate-800" />
                 )}
-                <div className="relative">
-                  <span className="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
-                    {offer.discountPercentage}% OFF
-                  </span>
-                  <h3 className="text-lg font-bold mb-1">{offer.title}</h3>
-                  <p className="text-sm text-white/80 line-clamp-2">{offer.description}</p>
-                  <p className="mt-3 text-xs text-white/60">Valid until {new Date(offer.validUntil).toLocaleDateString()}</p>
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
+                <span className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow">
+                  {offer.discountPercentage}% OFF
+                </span>
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-sm font-bold text-white leading-snug mb-0.5">{offer.title}</h3>
+                  <p className="text-xs text-white line-clamp-1">{offer.description}</p>
+                  <p className="mt-1 text-[10px] text-white">Valid until {new Date(offer.validUntil).toLocaleDateString()}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </section>
@@ -148,24 +171,47 @@ export default function Home() {
               View all <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-40px" }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.04 }
+              }
+            }}
+            className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3"
+          >
             {categories.map((cat) => (
-              <Link
+              <motion.div
                 key={cat._id}
-                to={`/products?category=${cat._id}`}
-                className="group flex flex-col items-center gap-2 p-3 rounded-2xl bg-white border border-slate-100 hover:border-indigo-200 hover:shadow-md transition-all text-center"
+                variants={{
+                  hidden: { opacity: 0, scale: 0.9, y: 15 },
+                  visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 15 } }
+                }}
+                whileHover={{ y: -6, scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <div className="h-14 w-14 rounded-xl overflow-hidden bg-slate-50 flex items-center justify-center">
-                  {cat.image?.url ? (
-                    <img src={cat.image.url} alt={cat.name} className="h-full w-full object-cover group-hover:scale-110 transition-transform" />
-                  ) : (
-                    <ShoppingBag className="h-6 w-6 text-slate-400" />
-                  )}
-                </div>
-                <span className="text-xs font-medium text-slate-700 line-clamp-2 leading-tight">{cat.name}</span>
-              </Link>
+                <Link
+                  to={`/products?category=${cat._id}`}
+                  className="group flex flex-col items-center gap-2.5 p-4 rounded-2xl bg-white border border-slate-100 hover:shadow-lg transition-all text-center h-full"
+                >
+                  <div className="h-16 w-16 rounded-2xl overflow-hidden bg-slate-50 flex items-center justify-center shadow-inner">
+                    {cat.image?.url ? (
+                      <img src={cat.image.url} alt={cat.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    ) : (
+                      <ShoppingBag className="h-7 w-7 text-slate-400" />
+                    )}
+                  </div>
+                  <span className="text-xs font-semibold text-slate-800 line-clamp-2 leading-tight group-hover:text-indigo-400 transition-colors duration-300">
+                    {cat.name}
+                  </span>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
       )}
 
@@ -180,7 +226,7 @@ export default function Home() {
         {products.length === 0 ? (
           <div className="text-center py-16 text-slate-400">No products available yet.</div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
             {products.map((p) => (
               <ProductCard key={p._id} product={p} onAddToCart={handleAddToCart} />
             ))}

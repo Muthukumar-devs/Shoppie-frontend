@@ -3,6 +3,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
+import { ToastContainer } from "./components/ui";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -23,6 +24,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <AuthProvider>
           <CartProvider>
             {children}
+            <ToastContainer />
           </CartProvider>
         </AuthProvider>
         <ScrollRestoration />

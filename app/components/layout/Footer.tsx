@@ -9,9 +9,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600">
-                <Store className="h-5 w-5 text-white" />
-              </div>
+              <img src="/logo.png" alt="Shoppie Logo" className="h-9 w-9 rounded-xl object-cover border border-slate-100" />
               <span className="text-lg font-bold text-white">Shoppie</span>
             </div>
             <p className="text-sm text-slate-400 max-w-xs leading-relaxed">

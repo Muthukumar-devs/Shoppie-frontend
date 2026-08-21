@@ -35,8 +35,8 @@ export default function LoginPage() {
         <div className="rounded-2xl bg-white shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-linear-to-r from-indigo-600 to-indigo-700 px-8 py-8 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
-              <Store className="h-7 w-7 text-white" />
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl overflow-hidden bg-white/20 backdrop-blur-sm">
+              <img src="/logo.png" alt="Shoppie Logo" className="h-full w-full object-cover" />
             </div>
             <h1 className="text-2xl font-bold text-white">Welcome Back</h1>
             <p className="mt-1 text-sm text-indigo-200">Sign in to your Shoppie account</p>

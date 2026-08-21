@@ -91,6 +91,9 @@ export const getProducts = (params?: Record<string, string | number>) =>
 
 export const getProduct = (id: string) => api.get(`/products/${id}`);
 
+export const getSearchSuggestions = (q: string) =>
+  api.get("/products/suggestions", { params: { q } });
+
 // ── Categories ────────────────────────────────────────────
 export const getCategories = () => api.get("/categories");
 
@@ -116,7 +119,19 @@ export const getMyOrders = () => api.get("/orders/my-orders");
 
 export const getOrderById = (id: string) => api.get(`/orders/${id}`);
 
+export const getOrderInvoice = (id: string) => api.get(`/orders/${id}/invoice`);
+
 export const cancelOrder = (id: string) => api.patch(`/orders/${id}/cancel`);
+
+// ── Reviews ───────────────────────────────────────────────
+export const getReviews = (productId: string, page = 1) =>
+  api.get(`/products/${productId}/reviews`, { params: { page, limit: 10 } });
+
+export const getReviewEligibility = (productId: string) =>
+  api.get(`/products/${productId}/reviews/eligibility`);
+
+export const postReview = (productId: string, data: { rating: number; comment: string }) =>
+  api.post(`/products/${productId}/reviews`, data);
 
 // ── Payments ──────────────────────────────────────────────
 export const createRazorpayOrder = (shippingAddress: object) =>

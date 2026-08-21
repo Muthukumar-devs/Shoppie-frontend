@@ -103,6 +103,16 @@ export interface Offer {
   applicableCategory?: Category | string;
 }
 
+export interface Review {
+  _id: string;
+  user: { _id: string; fullName: string } | string;
+  product: string;
+  order: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
 export interface ApiResponse<T> {
   status: string;
   data: T;

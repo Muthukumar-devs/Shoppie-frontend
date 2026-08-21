@@ -88,7 +88,7 @@ export default function CartPage() {
             const isUpdating = updatingId === p._id;
             const isRemoving = removingId === p._id;
             return (
-              <div key={p._id} className={`flex gap-4 bg-white rounded-2xl border border-slate-100 p-4 shadow-sm transition-opacity ${isRemoving ? "opacity-50" : ""}`}>
+              <div key={p._id} className={`cart-item flex gap-4 bg-white rounded-2xl border border-slate-100 p-4 shadow-sm transition-opacity ${isRemoving ? "opacity-50" : ""}`}>
                 <Link to={`/products/${p._id}`} className="shrink-0">
                   <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl overflow-hidden bg-slate-50 border border-slate-100">
                     {p.images[0]?.url ? (

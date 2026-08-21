@@ -1,5 +1,5 @@
-import { type ReactNode, useEffect } from "react";
-import { ShoppingCart, Package, Inbox, AlertTriangle, Star, X } from "lucide-react";
+import { type ReactNode, useEffect, useState, useCallback } from "react";
+import { ShoppingCart, Package, Inbox, AlertTriangle, Star, X, Minus, Plus, CheckCircle2 } from "lucide-react";
 
 // ── Button ────────────────────────────────────────────────
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -156,16 +156,33 @@ export function EmptyState({ icon, title, description, action }: { icon?: ReactN
   );
 }
 
-// ── StarRating ────────────────────────────────────────────
+// ── StarRating ────────────────────────────────────────────────────────────────
 export function StarRating({ rating, count }: { rating: number; count: number }) {
+  const pct = Math.min(100, Math.max(0, (rating / 5) * 100));
+  const stars = [1, 2, 3, 4, 5];
   return (
     <div className="flex items-center gap-1.5">
-      <div className="flex">
-        {[1, 2, 3, 4, 5].map((s) => (
-          <Star key={s} className={`h-4 w-4 ${s <= Math.round(rating) ? "fill-amber-400 text-amber-400" : "text-slate-200"}`} />
-        ))}
+      <div className="relative inline-flex">
+        {/* Grey base layer */}
+        <div className="flex">
+          {stars.map((s) => (
+            <Star key={s} className="h-3.5 w-3.5" style={{ fill: "#e2e8f0", color: "#e2e8f0", flexShrink: 0 }} />
+          ))}
+        </div>
+        {/* Amber overlay — clipped by width only, no right anchor */}
+        <div
+          className="absolute top-0 left-0 h-full overflow-hidden"
+          style={{ width: `${pct}%` }}
+        >
+          <div className="flex">
+            {stars.map((s) => (
+              <Star key={s} className="h-3.5 w-3.5" style={{ fill: "#fbbf24", color: "#fbbf24", flexShrink: 0 }} />
+            ))}
+          </div>
+        </div>
       </div>
-      <span className="text-xs text-slate-500">({count})</span>
+      <span className="text-xs font-medium text-slate-600">{rating.toFixed(1)}</span>
+      {count > 0 && <span className="text-xs text-slate-400">({count})</span>}
     </div>
   );
 }
@@ -238,14 +255,112 @@ export function OtpInput({ value, onChange }: { value: string; onChange: (v: str
   );
 }
 
+// ── Toast ────────────────────────────────────────────────
+interface ToastItem { id: number; message: string; image?: string; }
+
+export function useToast() {
+  const show = useCallback((message: string, image?: string) => {
+    window.dispatchEvent(new CustomEvent("shoppie:toast", { detail: { message, image } }));
+  }, []);
+  return { show };
+}
+
+export function ToastContainer() {
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [exiting, setExiting] = useState<Set<number>>(new Set());
+
+  const dismiss = useCallback((id: number) => {
+    setExiting((prev) => new Set(prev).add(id));
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+      setExiting((prev) => { const s = new Set(prev); s.delete(id); return s; });
+    }, 350);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { message, image } = (e as CustomEvent).detail;
+      const id = Date.now();
+      setToasts((prev) => [...prev.slice(-2), { id, message, image }]);
+      setTimeout(() => dismiss(id), 3000);
+    };
+    window.addEventListener("shoppie:toast", handler);
+    return () => window.removeEventListener("shoppie:toast", handler);
+  }, [dismiss]);
+
+  if (toasts.length === 0) return null;
+
+  return (
+    <div className="fixed bottom-5 right-5 z-100 flex flex-col gap-2 items-end">
+      {toasts.map((t) => (
+        <div
+          key={t.id}
+          style={{
+            animation: exiting.has(t.id)
+              ? "toastOut 0.35s cubic-bezier(0.4,0,1,1) both"
+              : "toastIn 0.4s cubic-bezier(0.16,1,0.3,1) both",
+            background: "linear-gradient(135deg, #1a1040 0%, #0d1b3e 100%)",
+            border: "1px solid rgba(121,40,202,0.4)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(121,40,202,0.15)",
+          }}
+          className="flex items-center gap-3 text-sm font-medium px-4 py-3 rounded-2xl min-w-56 max-w-72"
+        >
+          {t.image ? (
+            <img src={t.image} alt="" className="h-9 w-9 rounded-lg object-cover shrink-0" style={{ border: "1px solid rgba(121,40,202,0.3)" }} />
+          ) : (
+            <div className="h-9 w-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: "#7928ca" }}>
+              <ShoppingCart className="h-4 w-4" style={{ color: "#ffffff" }} />
+            </div>
+          )}
+          <span className="flex-1 leading-snug" style={{ color: "#ffffff" }}>{t.message}</span>
+          <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: "#10b981" }} />
+          <button
+            onClick={() => dismiss(t.id)}
+            className="ml-1 transition-opacity hover:opacity-70"
+            style={{ color: "#94a3b8" }}
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ── ProductCard ───────────────────────────────────────────
 import type { Product } from "../../lib/types";
 
 export function ProductCard({ product, onAddToCart }: { product: Product; onAddToCart?: (id: string) => void }) {
   const img = product.images[0]?.url;
+  const [qty, setQty] = useState(0);
+  const { show: showToast } = useToast();
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setQty(1);
+    onAddToCart?.(product._id);
+    showToast(`${product.name} added to cart`, img);
+  };
+
+  const handleIncrease = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const next = Math.min(product.stock, qty + 1);
+    setQty(next);
+    onAddToCart?.(product._id);
+    showToast(`${product.name} quantity updated`, img);
+  };
+
+  const handleDecrease = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const next = qty - 1;
+    if (next <= 0) { setQty(0); return; }
+    setQty(next);
+  };
+
   return (
-    <a href={`/products/${product._id}`} className="group block rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-all overflow-hidden">
-      <div className="relative aspect-square bg-slate-50 overflow-hidden">
+    <a href={`/products/${product._id}`} className="group block rounded-xl bg-white border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+      {/* Image */}
+      <div className="relative aspect-4/3 bg-slate-50 overflow-hidden">
         {img ? (
           <img src={img} alt={product.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
         ) : (
@@ -253,30 +368,70 @@ export function ProductCard({ product, onAddToCart }: { product: Product; onAddT
             <Package className="h-12 w-12 text-slate-300" />
           </div>
         )}
+
+        {/* Discount badge */}
         {product.discount > 0 && (
-          <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{product.discount}% OFF</span>
+          <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wide shadow">
+            {product.discount}% OFF
+          </span>
         )}
+
+        {/* Out of stock overlay */}
         {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="bg-white text-slate-800 text-xs font-bold px-3 py-1 rounded-full">Out of Stock</span>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-[1px] flex items-center justify-center">
+            <span className="bg-white/90 text-slate-800 text-xs font-bold px-3 py-1 rounded-full shadow">Out of Stock</span>
           </div>
         )}
-        <button
-          onClick={(e) => { e.preventDefault(); onAddToCart?.(product._id); }}
-          className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-600 text-white p-2 rounded-xl shadow-lg hover:bg-indigo-700"
-        >
-          <ShoppingCart className="h-4 w-4" />
-        </button>
+
+        {/* Cart button / qty stepper — shown on hover */}
+        {product.stock > 0 && (
+          <div className="absolute bottom-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0">
+            {qty === 0 ? (
+              <button
+                onClick={handleAdd}
+                className="flex items-center justify-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-semibold px-3 py-1.5 rounded-lg shadow-md transition-colors"
+              >
+                <ShoppingCart className="h-3 w-3" /> Add to Cart
+              </button>
+            ) : (
+              <div
+                onClick={(e) => e.preventDefault()}
+                className="flex items-center justify-between bg-indigo-700 rounded-lg shadow-md overflow-hidden"
+              >
+                <button
+                  onClick={handleDecrease}
+                  className="flex items-center justify-center w-7 h-7 text-white hover:bg-indigo-800 transition-colors"
+                >
+                  <Minus className="h-3 w-3" />
+                </button>
+                <span className="text-white text-[11px] font-bold min-w-5 text-center">{qty}</span>
+                <button
+                  onClick={handleIncrease}
+                  disabled={qty >= product.stock}
+                  className="flex items-center justify-center w-7 h-7 text-white hover:bg-indigo-800 disabled:opacity-40 transition-colors"
+                >
+                  <Plus className="h-3 w-3" />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-      <div className="p-3">
-        {product.brand && <p className="text-xs text-slate-400 mb-0.5">{product.brand}</p>}
-        <p className="text-sm font-medium text-slate-800 line-clamp-2 leading-snug">{product.name}</p>
-        <div className="mt-2 flex items-center gap-2">
-          <span className="text-base font-bold text-slate-900">₹{product.price.toLocaleString()}</span>
+
+      {/* Info */}
+      <div className="p-2">
+        {product.brand && (
+          <p className="text-[9px] font-semibold uppercase tracking-widest text-indigo-400 mb-0.5">{product.brand}</p>
+        )}
+        <p className="text-xs font-semibold text-slate-800 line-clamp-2 leading-snug">{product.name}</p>
+
+        <div className="mt-1 flex items-center gap-1.5">
+          <span className="text-sm font-extrabold text-slate-900">₹{product.price.toLocaleString()}</span>
           {product.mrp > product.price && (
-            <span className="text-xs text-slate-400 line-through">₹{product.mrp.toLocaleString()}</span>
+            <span className="text-[10px] text-slate-400 line-through">₹{product.mrp.toLocaleString()}</span>
           )}
         </div>
+
         {product.ratings.count > 0 && (
           <div className="mt-1">
             <StarRating rating={product.ratings.average} count={product.ratings.count} />

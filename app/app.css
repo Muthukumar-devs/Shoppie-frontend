@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Harlow Solid';
+  src: url('/fonts/harlow-solid.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
@@ -8,45 +16,70 @@
   --color-primary-dark: #0072ff;
 
   /* Override slate colors for Midnight Slate Dark Mode */
-  --color-slate-50: #090d1a;       /* Deep Midnight Blue body background */
-  --color-slate-100: #1e293b;      /* Dark slate border */
-  --color-slate-200: #334155;      /* Border / divider */
-  --color-slate-300: #475569;      /* Darker grey */
-  --color-slate-400: #64748b;      /* Grey text */
-  --color-slate-500: #94a3b8;      /* Grey text */
-  --color-slate-600: #cbd5e1;      /* Light grey text */
-  --color-slate-700: #e2e8f0;      /* Lighter text */
-  --color-slate-800: #f1f5f9;      /* White-ish text */
-  --color-slate-900: #ffffff;      /* Pure white text */
-  --color-slate-950: #050811;      /* Extra dark for elements */
+  --color-slate-50: #090d1a;
+  /* Deep Midnight Blue body background */
+  --color-slate-100: #1e293b;
+  /* Dark slate border */
+  --color-slate-200: #334155;
+  /* Border / divider */
+  --color-slate-300: #475569;
+  /* Darker grey */
+  --color-slate-400: #64748b;
+  /* Grey text */
+  --color-slate-500: #94a3b8;
+  /* Grey text */
+  --color-slate-600: #cbd5e1;
+  /* Light grey text */
+  --color-slate-700: #e2e8f0;
+  /* Lighter text */
+  --color-slate-800: #f1f5f9;
+  /* White-ish text */
+  --color-slate-900: #ffffff;
+  /* Pure white text */
+  --color-slate-950: #050811;
+  /* Extra dark for elements */
 
   /* Override white color to match Dark mode card background */
-  --color-white: #131b2e;          /* Slate Gray card/component background */
+  --color-white: #131b2e;
+  /* Slate Gray card/component background */
 
   /* Override indigo colors to match the Amethyst Aurora palette */
-  --color-indigo-50: #1e1b4b;      /* Dark active bg for buttons/badges */
-  --color-indigo-100: #312e81;     /* Avatar bg / active badge bg */
-  --color-indigo-200: #cbd5e1;     /* Light gray */
-  --color-indigo-300: #00f2fe;     /* Electric Cyan accent */
+  --color-indigo-50: #1e1b4b;
+  /* Dark active bg for buttons/badges */
+  --color-indigo-100: #312e81;
+  /* Avatar bg / active badge bg */
+  --color-indigo-200: #cbd5e1;
+  /* Light gray */
+  --color-indigo-300: #00f2fe;
+  /* Electric Cyan accent */
   --color-indigo-400: #a78bfa;
-  --color-indigo-500: #7928ca;     /* Vibrant Purple */
-  --color-indigo-600: #7928ca;     /* Vibrant Purple */
-  --color-indigo-700: #0072ff;     /* Cobalt Blue */
-  --color-indigo-800: #0072ff;     /* Cobalt Blue */
-  --color-indigo-900: #7928ca;     /* Vibrant Purple (Hero) */
+  --color-indigo-500: #7928ca;
+  /* Vibrant Purple */
+  --color-indigo-600: #7928ca;
+  /* Vibrant Purple */
+  --color-indigo-700: #0072ff;
+  /* Cobalt Blue */
+  --color-indigo-800: #0072ff;
+  /* Cobalt Blue */
+  --color-indigo-900: #7928ca;
+  /* Vibrant Purple (Hero) */
   --color-indigo-950: #020617;
 
   /* Override purple to match the Amethyst Aurora palette */
   --color-purple-600: #7928ca;
   --color-purple-700: #0072ff;
   --color-purple-800: #0056c6;
-  --color-purple-900: #00f2fe;     /* Electric Cyan (Hero) */
+  --color-purple-900: #00f2fe;
+  /* Electric Cyan (Hero) */
 
   /* Override red / danger colors to match Secondary Alert (Pink/Magenta) */
-  --color-red-50: #2a1215;         /* Red alert bg in dark mode */
+  --color-red-50: #2a1215;
+  /* Red alert bg in dark mode */
   --color-red-100: #4c1d24;
-  --color-red-500: #FF007A;        /* Neon Pink */
-  --color-red-600: #f857a6;        /* Deep Magenta */
+  --color-red-500: #FF007A;
+  /* Neon Pink */
+  --color-red-600: #f857a6;
+  /* Deep Magenta */
   --color-red-700: #ff2a85;
   --color-red-800: #e11d48;
 
@@ -67,29 +100,72 @@
   --color-amber-800: #f59e0b;
 }
 
-html, body {
+html,
+body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 
 /* --- CUSTOM DARK MODE UTILITY OVERRIDES --- */
 
 /* Fix text colors dynamically since they are hardcoded to dark slate classes */
-.text-slate-900 { color: #ffffff !important; }
-.text-slate-800 { color: #f1f5f9 !important; }
-.text-slate-700 { color: #e2e8f0 !important; }
-.text-slate-600 { color: #cbd5e1 !important; }
-.text-slate-500 { color: #94a3b8 !important; }
+.text-slate-900 {
+  color: #ffffff !important;
+}
+
+.text-slate-800 {
+  color: #f1f5f9 !important;
+}
+
+.text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+.text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+.text-slate-500 {
+  color: #94a3b8 !important;
+}
 
 /* Correct white text utility */
-.text-white { color: #ffffff !important; }
-.fill-white { fill: #ffffff !important; }
+.text-white {
+  color: #ffffff !important;
+}
+
+.fill-white {
+  fill: #ffffff !important;
+}
 
 /* Ambient background glow orbs for Amethyst Aurora vibe with floating animation */
 body {
@@ -129,9 +205,11 @@ body::after {
   0% {
     transform: translate(0px, 0px) rotate(0deg) scale(1);
   }
+
   50% {
     transform: translate(4vw, -6vh) rotate(180deg) scale(1.1);
   }
+
   100% {
     transform: translate(0px, 0px) rotate(360deg) scale(1);
   }
@@ -141,9 +219,11 @@ body::after {
   0% {
     transform: translate(0px, 0px) rotate(0deg) scale(1);
   }
+
   50% {
     transform: translate(-3vw, 5vh) rotate(-180deg) scale(0.9);
   }
+
   100% {
     transform: translate(0px, 0px) rotate(-360deg) scale(1);
   }
@@ -163,133 +243,88 @@ a[href="/"] .text-slate-900,
   color: #ffffff !important;
   border: none !important;
 }
+
 .bg-white.text-indigo-700:hover {
   opacity: 0.9 !important;
 }
 
 /* --- MOTION GRAPHICS & ANIMATION ADDITIONS --- */
 
-/* Page Fade-In and Slide-Up Entry Animation */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Animate main route container elements on render */
-main > div {
-  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(100%) scale(0.95); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
 }
 
-/* Product card hover dynamic scaling, border transform, and amethyst glow */
-a.group.block {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-a.group.block:hover {
-  transform: translateY(-6px) scale(1.015);
-  box-shadow: 0 20px 25px -5px rgba(121, 40, 202, 0.15), 0 10px 10px -5px rgba(0, 114, 255, 0.1);
-  border-color: rgba(121, 40, 202, 0.4) !important;
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(100%) scale(0.95); }
 }
 
-/* Product Card Images Hover zoom */
-a.group.block img {
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-a.group.block:hover img {
-  transform: scale(1.05) !important;
-}
-
-/* Logo store icon rotation micro-interaction on hover */
-a[href="/"]:hover .bg-indigo-600 {
-  transform: rotate(15deg) scale(1.08);
-}
-a[href="/"] .bg-indigo-600 {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Cart icon scale & translate micro-interaction on hover */
-a[href="/cart"]:hover svg {
-  transform: translateY(-2px) scale(1.1);
-}
-a[href="/cart"] svg {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* User avatar scale micro-interaction */
-button:hover .bg-indigo-100 {
-  transform: scale(1.08);
-}
-button .bg-indigo-100 {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Category item card scaling and hover border highlights */
-a[href*="/products?category="] {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-a[href*="/products?category="]:hover {
-  transform: translateY(-4px) scale(1.03);
-  box-shadow: 0 12px 20px -8px rgba(121, 40, 202, 0.2);
-  border-color: rgba(121, 40, 202, 0.3) !important;
-}
-
-/* Hot Offers Banner Pulsating Ambient Glow */
 @keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 4px 6px -1px rgba(121, 40, 202, 0.1), 0 2px 4px -1px rgba(0, 114, 255, 0.06);
-  }
-  50% {
-    box-shadow: 0 10px 30px -5px rgba(121, 40, 202, 0.25), 0 8px 15px -5px rgba(0, 114, 255, 0.15);
-  }
-}
-.relative.rounded-2xl.overflow-hidden.bg-linear-to-br.from-indigo-600.to-purple-700,
-.relative.rounded-2xl.overflow-hidden.bg-linear-to-br.from-indigo-900.via-indigo-800.to-purple-900 {
-  animation: pulse-glow 3s infinite ease-in-out;
+  0%, 100% { box-shadow: 0 4px 6px -1px rgba(121, 40, 202, 0.1); }
+  50%       { box-shadow: 0 10px 30px -5px rgba(121, 40, 202, 0.3), 0 8px 15px -5px rgba(0, 114, 255, 0.2); }
 }
 
-/* Buttons micro-scaling */
-button,
-a.inline-flex.items-center.justify-center {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-button:hover,
-a.inline-flex.items-center.justify-center:hover {
-  transform: translateY(-1px);
-}
-button:active,
-a.inline-flex.items-center.justify-center:active {
-  transform: translateY(1px) scale(0.98);
+@keyframes slideFadeReveal {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
 
-/* --- IN-PAGE ELEMENT STAGGER ANIMATIONS --- */
+@keyframes neonGlowPulse {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 242, 254, 0.2)); }
+  50%       { filter: drop-shadow(0 0 22px rgba(0, 242, 254, 0.5)); }
+}
 
-/* Staggered entry animation for product cards inside grids */
+/* Page entry */
+main > div {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── Product cards ─────────────────────────────────────── */
 .grid > a.group.block {
   opacity: 0;
   animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.grid > a.group.block:nth-child(1) { animation-delay: 0.04s; }
-.grid > a.group.block:nth-child(2) { animation-delay: 0.08s; }
-.grid > a.group.block:nth-child(3) { animation-delay: 0.12s; }
-.grid > a.group.block:nth-child(4) { animation-delay: 0.16s; }
-.grid > a.group.block:nth-child(5) { animation-delay: 0.20s; }
-.grid > a.group.block:nth-child(6) { animation-delay: 0.24s; }
-.grid > a.group.block:nth-child(7) { animation-delay: 0.28s; }
-.grid > a.group.block:nth-child(8) { animation-delay: 0.32s; }
-.grid > a.group.block:nth-child(9) { animation-delay: 0.36s; }
+.grid > a.group.block:nth-child(1)  { animation-delay: 0.04s; }
+.grid > a.group.block:nth-child(2)  { animation-delay: 0.08s; }
+.grid > a.group.block:nth-child(3)  { animation-delay: 0.12s; }
+.grid > a.group.block:nth-child(4)  { animation-delay: 0.16s; }
+.grid > a.group.block:nth-child(5)  { animation-delay: 0.20s; }
+.grid > a.group.block:nth-child(6)  { animation-delay: 0.24s; }
+.grid > a.group.block:nth-child(7)  { animation-delay: 0.28s; }
+.grid > a.group.block:nth-child(8)  { animation-delay: 0.32s; }
+.grid > a.group.block:nth-child(9)  { animation-delay: 0.36s; }
 .grid > a.group.block:nth-child(10) { animation-delay: 0.40s; }
 .grid > a.group.block:nth-child(11) { animation-delay: 0.44s; }
 .grid > a.group.block:nth-child(12) { animation-delay: 0.48s; }
 
-/* Staggered entry for category selection items */
+a.group.block {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+a.group.block:hover {
+  transform: translateY(-5px) scale(1.015);
+  box-shadow: 0 20px 25px -5px rgba(121, 40, 202, 0.15), 0 10px 10px -5px rgba(0, 114, 255, 0.1);
+  border-color: rgba(121, 40, 202, 0.4) !important;
+}
+a.group.block img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+a.group.block:hover img {
+  transform: scale(1.05);
+}
+
+/* ── Category cards ────────────────────────────────────── */
 .grid > a[href*="/products?category="] {
   opacity: 0;
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .grid > a[href*="/products?category="]:nth-child(1) { animation-delay: 0.03s; }
 .grid > a[href*="/products?category="]:nth-child(2) { animation-delay: 0.06s; }
@@ -299,43 +334,94 @@ a.inline-flex.items-center.justify-center:active {
 .grid > a[href*="/products?category="]:nth-child(6) { animation-delay: 0.18s; }
 .grid > a[href*="/products?category="]:nth-child(7) { animation-delay: 0.21s; }
 .grid > a[href*="/products?category="]:nth-child(8) { animation-delay: 0.24s; }
+.grid > a[href*="/products?category="]:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 20px -8px rgba(121, 40, 202, 0.2);
+  border-color: rgba(121, 40, 202, 0.3) !important;
+}
 
-/* Staggered entry for cart list items */
-.lg\:col-span-2 > div {
+/* ── Cart items ────────────────────────────────────────── */
+.cart-item {
   opacity: 0;
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.lg\:col-span-2 > div:nth-child(1) { animation-delay: 0.04s; }
-.lg\:col-span-2 > div:nth-child(2) { animation-delay: 0.08s; }
-.lg\:col-span-2 > div:nth-child(3) { animation-delay: 0.12s; }
-.lg\:col-span-2 > div:nth-child(4) { animation-delay: 0.16s; }
-.lg\:col-span-2 > div:nth-child(5) { animation-delay: 0.20s; }
+.cart-item:nth-child(1) { animation-delay: 0.04s; }
+.cart-item:nth-child(2) { animation-delay: 0.08s; }
+.cart-item:nth-child(3) { animation-delay: 0.12s; }
+.cart-item:nth-child(4) { animation-delay: 0.16s; }
+.cart-item:nth-child(5) { animation-delay: 0.20s; }
 
-/* Staggered entry for order lists */
-.space-y-4 > div {
+/* ── Order items ───────────────────────────────────────── */
+.order-item {
   opacity: 0;
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.space-y-4 > div:nth-child(1) { animation-delay: 0.05s; }
-.space-y-4 > div:nth-child(2) { animation-delay: 0.10s; }
-.space-y-4 > div:nth-child(3) { animation-delay: 0.15s; }
-.space-y-4 > div:nth-child(4) { animation-delay: 0.20s; }
-.space-y-4 > div:nth-child(5) { animation-delay: 0.25s; }
+.order-item:nth-child(1) { animation-delay: 0.05s; }
+.order-item:nth-child(2) { animation-delay: 0.10s; }
+.order-item:nth-child(3) { animation-delay: 0.15s; }
+.order-item:nth-child(4) { animation-delay: 0.20s; }
+.order-item:nth-child(5) { animation-delay: 0.25s; }
 
-/* Staggered entry for form fields (Login, Signup, Profile, Checkout) */
-form .flex-col,
-.grid > .flex-col,
-.space-y-4 > .flex-col,
-.space-y-6 > .flex-col {
+/* ── Form fields ───────────────────────────────────────── */
+.form-field {
   opacity: 0;
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-form .flex-col:nth-child(1), .grid > .flex-col:nth-child(1), .space-y-4 > .flex-col:nth-child(1) { animation-delay: 0.04s; }
-form .flex-col:nth-child(2), .grid > .flex-col:nth-child(2), .space-y-4 > .flex-col:nth-child(2) { animation-delay: 0.08s; }
-form .flex-col:nth-child(3), .grid > .flex-col:nth-child(3), .space-y-4 > .flex-col:nth-child(3) { animation-delay: 0.12s; }
-form .flex-col:nth-child(4), .grid > .flex-col:nth-child(4), .space-y-4 > .flex-col:nth-child(4) { animation-delay: 0.16s; }
+.form-field:nth-child(1) { animation-delay: 0.04s; }
+.form-field:nth-child(2) { animation-delay: 0.08s; }
+.form-field:nth-child(3) { animation-delay: 0.12s; }
+.form-field:nth-child(4) { animation-delay: 0.16s; }
 
-/* Product detail page inner details animations */
+/* ── Buttons micro-interaction ─────────────────────────── */
+button {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.2s ease !important;
+}
+button:hover  { transform: translateY(-1px); }
+button:active { transform: translateY(1px) scale(0.98); }
+
+/* ── Logo micro-interaction ────────────────────────────── */
+a[href="/"] img {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+a[href="/"]:hover img {
+  transform: rotate(15deg) scale(1.08);
+}
+
+/* ── Cart icon micro-interaction ───────────────────────── */
+a[href="/cart"] svg {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+a[href="/cart"]:hover svg {
+  transform: translateY(-2px) scale(1.1);
+}
+
+/* ── Hero text animations ──────────────────────────────── */
+.relative.bg-slate-950 h1 {
+  font-family: 'Harlow Solid', 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  animation: slideFadeReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.85);
+}
+.relative.bg-slate-950 h1 span {
+  -webkit-text-stroke: 0px transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  background: linear-gradient(135deg, #00f2fe, #0072ff, #7928ca);
+  -webkit-background-clip: text;
+  display: inline-block;
+  animation: neonGlowPulse 4s infinite alternate ease-in-out;
+}
+.relative.bg-slate-950 p {
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  opacity: 0;
+  animation: slideFadeReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+
+/* ── Product detail stagger ────────────────────────────── */
 .grid-cols-1.lg\:grid-cols-2 > div.space-y-5 > * {
   opacity: 0;
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
